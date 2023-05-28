@@ -1,0 +1,104 @@
+#include <stdio.h>
+#include <stdlib.h>
+#define MAX_HEAP_NODE 200
+
+void error(){
+	exit(1);
+}
+
+typedef int HNode;
+#define Key(n) (n)
+
+HNode heap[MAX_HEAP_NODE];
+int heap_size;
+
+//부모 노드
+#define parent(i) (heap[i/2])
+//왼쪽 자식 노드
+#define left(i) (heap[i*2])
+//오른쪽 자식 노드
+#define right(i) (heap[i*2 + 1])
+
+void init_heap() { heap_size = 0; }
+int is_empty_heap() { return heap_size == 0; }
+int is_full_heap() { return heap_size == MAX_HEAP_NODE - 1 ;}
+HNode find_heap() { return heap[1]; }
+
+//10.2
+void insert_heap(HNode n)
+{
+	int i ;
+	if ( is_full_heap() ) return;
+	i = ++(heap_size);
+	while( i != 1 &&  Key(n) > Key( parent(i) ) )
+	{
+		heap[i] = parent(i);
+		i /= 2;
+	}
+	heap[i] = n;
+}
+
+//10.3
+HNode delete_heap()
+{
+	HNode hroot, last;
+	int parent = 1, child = 2;
+
+	if( is_empty_heap() )
+		error();
+
+	hroot = heap[1];
+	last = heap[heap_size--];
+	while(child <= heap_size)
+	{
+		//더 큰 자식을 찾고 child = 더 큰 자식의 인덱스 값을 가짐.
+		if( child < heap_size && Key( left( parent ) ) < Key ( right ( parent ) ) )
+			child++;
+		if( Key( last ) >= Key( heap[child] ) )
+			break;
+		heap[parent] = heap[child];
+		parent = child;
+		child *= 2;
+	}
+	heap[parent] = last;
+	return hroot;
+}
+
+//10.4
+void print_heap()
+{
+	int i, level;
+	for( i = 1, level = 1; i <= heap_size; i++ )
+	{
+		if( i == level )
+		{
+			printf("\n");
+			level *= 2;
+		}
+		printf("%2d", Key(heap[i]));
+	}
+	printf("\n--------------------");
+}
+
+void main()
+{
+	init_heap();
+	insert_heap(2);
+	insert_heap(5);
+	insert_heap(4);
+	insert_heap(8);
+	insert_heap(9);
+	insert_heap(3);
+	insert_heap(7);
+	insert_heap(3);
+	print_heap();
+
+	delete_heap();
+	print_heap();
+
+	delete_heap();
+	print_heap();
+
+	printf("\n");
+	
+}

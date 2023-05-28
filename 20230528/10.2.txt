@@ -1,0 +1,39 @@
+#include <stdio.h>
+#include <stdlib.h>
+#define MAX_HEAP_NODE 200
+
+void error(){
+	exit(1);
+}
+
+typedef int HNode;
+#define Key(n) (n)
+
+HNode heap[MAX_HEAP_NODE];
+int heap_size;
+
+//부모 노드
+#define parent(i) (heap[i/2])
+//왼쪽 자식 노드
+#define left(i) (heap[i*2])
+//오른쪽 자식 노드
+#define right(i) (heap[i*2 + 1])
+
+void init_heap() { heap_size = 0; }
+int is_empty_heap() { return heap_size == 0; }
+int is_full_heap() { return heap_size == MAX_HEAP_NODE - 1 ;}
+HNode find_heap() { return heap[1]; }
+
+//10.2
+void insert_heap(HNode n)
+{
+	int i ;
+	if ( is_full_heap() ) return;
+	i = ++(heap_size);
+	while( i != 1 &&  Key(n) > Key( parent(i) ) )
+	{
+		heap[i] = parent(i);
+		i /= 2;
+	}
+	heap[i] = n;
+}
